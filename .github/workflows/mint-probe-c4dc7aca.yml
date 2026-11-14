@@ -1,0 +1,37 @@
+# Behaviour-test mint probe shim (pkg/behaviourtest/steps/mint_probe.go).
+# Pushed to a temporary branch of the leased test repository; scenario
+# cleanup deletes the branch.
+name: mint-probe-c4dc7aca
+
+on:
+  push:
+    branches: ['behaviour/mint-probe-c4dc7aca']
+
+permissions: {}
+
+jobs:
+  # Same-repository request through the approved host: must mint.
+  control:
+    permissions:
+      contents: read
+      id-token: write
+    uses: halfsend-07/test-repo-09-mint-host/.github/workflows/mint-probe.yml@main
+    with:
+      mint_url: ${{ vars.FULLSEND_MINT_URL }}
+      role: 'coder'
+      level: 'read'
+      repos_json: '["test-repo-09"]'
+      artifact_name: 'mint-probe-control'
+
+  # The request under test.
+  subject:
+    permissions:
+      contents: read
+      id-token: write
+    uses: halfsend-07/test-repo-09-mint-host/.github/workflows/mint-probe.yml@main
+    with:
+      mint_url: ${{ vars.FULLSEND_MINT_URL }}
+      role: 'coder'
+      level: 'read'
+      repos_json: '["*"]'
+      artifact_name: 'mint-probe-subject'
